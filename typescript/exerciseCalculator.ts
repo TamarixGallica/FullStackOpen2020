@@ -1,9 +1,37 @@
-interface ExerciseCliArguments {
+import { isArray } from "util";
+
+interface ExerciseArguments {
     target: number;
     trainingHours: Array<number>;
 }
 
-const parseExerciseArguments = (args: Array<string>): ExerciseCliArguments => {
+export const parseExerciseExpressArguments = (target: string, dailyExercises: Array<string>): ExerciseArguments => {
+    const formatErrorMessage = 'malformatted parameters';
+
+    if (!target || !dailyExercises) {
+        throw new Error('parameters missing');
+    }
+
+    if (isNaN(Number(target)) || !isArray(dailyExercises)) {
+        throw new Error(formatErrorMessage);
+    }
+
+    const trainingHours: Array<number> = [];
+
+    dailyExercises.map((exercise) => {
+        if (isNaN(Number(exercise))) {
+            throw new Error(formatErrorMessage);
+        }
+        trainingHours.push(Number(exercise));
+    });
+
+    return {
+        target: Number(target),
+        trainingHours
+    };
+};
+
+const parseExerciseCliArguments = (args: Array<string>): ExerciseArguments => {
     if (args.length < 4) throw new Error('Not enough arguments');
 
     if (isNaN(Number(args[2]))) {
@@ -68,7 +96,7 @@ const calculateRating = (average: number, target: number): RatingResults => {
     };
 };
 
-const calculateExercises = (exercises: Array<number>, target: number): ExerciseResults => {
+export const calculateExercises = (exercises: Array<number>, target: number): ExerciseResults => {
     const periodLength = exercises.length;
     const trainingDays = exercises.filter((hours) => hours !== 0).length;
     const average = exercises.reduce((acc, curr) => acc + curr) / periodLength;
@@ -89,7 +117,7 @@ const calculateExercises = (exercises: Array<number>, target: number): ExerciseR
 };
 
 try {
-    const {target, trainingHours} = parseExerciseArguments(process.argv);
+    const {target, trainingHours} = parseExerciseCliArguments(process.argv);
     console.log(calculateExercises(trainingHours, target));
 } catch (e) {
     console.error(`Error, could not calculate exercises: ${e.message}`);
