@@ -11,6 +11,7 @@ const calculator = (a: number, b: number, op: Operation) => {
         if (b === 0) return 'Can\'t divide by 0!';
         return a / b;
     }
+    return `Unknown requested operation ${op}`;
 }
 
 const multiplicator = (a: number, b: number, printText: string) => {
