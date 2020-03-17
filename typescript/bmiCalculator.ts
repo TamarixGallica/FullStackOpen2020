@@ -3,7 +3,7 @@ interface BmiCliArguments {
     weight: number;
 }
 
-export const parseBmiArguments = (args: Array<string>) : BmiCliArguments => {
+export const parseBmiArguments = (args: Array<string>): BmiCliArguments => {
     if (args.length < 4) throw new Error('Not enough arguments');
     if (args.length > 4) throw new Error('Too many arguments');
 
@@ -15,10 +15,9 @@ export const parseBmiArguments = (args: Array<string>) : BmiCliArguments => {
     } else {
         throw new Error('Provided height and weight are not numbers');
     }
+};
 
-}
-
-export const calculateBmi = (height: number, weight: number) : string => {
+export const calculateBmi = (height: number, weight: number): string => {
     const bmi = weight / (height / 100)**2;
     if (bmi <= 15)
         return "Very severely underweight";
@@ -35,7 +34,7 @@ export const calculateBmi = (height: number, weight: number) : string => {
     if (bmi <= 40)
         return "Obese Class II (Severely obese)";
     return "Obese Class III (Very severely obese)";
-}
+};
 
 try {
     const {height, weight} = parseBmiArguments(process.argv);

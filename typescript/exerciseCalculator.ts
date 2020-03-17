@@ -3,20 +3,20 @@ interface ExerciseCliArguments {
     trainingHours: Array<number>;
 }
 
-const parseExerciseArguments = (args: Array<string>) : ExerciseCliArguments => {
+const parseExerciseArguments = (args: Array<string>): ExerciseCliArguments => {
     if (args.length < 4) throw new Error('Not enough arguments');
 
     if (isNaN(Number(args[2]))) {
         throw new Error('Provided target is not a number');
     }
 
-    let trainingHours: Array<number> = [];
+    const trainingHours: Array<number> = [];
 
     const hourArgs = args.slice(3);
 
     let trainingHour;
 
-    while (trainingHour = hourArgs.pop()) {
+    while ((trainingHour = hourArgs.pop()) !== undefined) {
         if (isNaN(Number(trainingHour))) {
             throw new Error(`Provided training hour ${trainingHour} is not a number`);
         }
@@ -26,9 +26,9 @@ const parseExerciseArguments = (args: Array<string>) : ExerciseCliArguments => {
     return {
         target: Number(args[2]),
         trainingHours,
-    }
+    };
 
-}
+};
 
 interface ExerciseResults {
     periodLength: number;
@@ -45,7 +45,7 @@ interface RatingResults {
     ratingDescription: string;
 }
 
-const calculateRating = (average: number, target: number) : RatingResults => {
+const calculateRating = (average: number, target: number): RatingResults => {
     let rating;
     let ratingDescription;
 
@@ -59,16 +59,16 @@ const calculateRating = (average: number, target: number) : RatingResults => {
         ratingDescription = "not too bad but could be better";
     } else {
         rating = 3;
-        ratingDescription = "well done"
+        ratingDescription = "well done";
     }
 
     return {
         rating,
         ratingDescription
     };
-}
+};
 
-const calculateExercises = (exercises: Array<number>, target: number) : ExerciseResults => {
+const calculateExercises = (exercises: Array<number>, target: number): ExerciseResults => {
     const periodLength = exercises.length;
     const trainingDays = exercises.filter((hours) => hours !== 0).length;
     const average = exercises.reduce((acc, curr) => acc + curr) / periodLength;
@@ -85,7 +85,7 @@ const calculateExercises = (exercises: Array<number>, target: number) : Exercise
         ratingDescription,
         target,
         average,
-    }
+    };
 };
 
 try {
