@@ -3,7 +3,7 @@ interface BmiCliArguments {
     weight: number;
 }
 
-const parseBmiArguments = (args: Array<string>) : BmiCliArguments => {
+export const parseBmiArguments = (args: Array<string>) : BmiCliArguments => {
     if (args.length < 4) throw new Error('Not enough arguments');
     if (args.length > 4) throw new Error('Too many arguments');
 
@@ -18,7 +18,7 @@ const parseBmiArguments = (args: Array<string>) : BmiCliArguments => {
 
 }
 
-const calculateBmi = (height: number, weight: number) : string => {
+export const calculateBmi = (height: number, weight: number) : string => {
     const bmi = weight / (height / 100)**2;
     if (bmi <= 15)
         return "Very severely underweight";
