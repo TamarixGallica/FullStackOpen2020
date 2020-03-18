@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NewPatient } from './types';
+import { NewPatient, Gender } from './types';
 
 const isValidString = (str: any): str is string => {
     return typeof str === 'string' || str instanceof String;
@@ -37,12 +37,23 @@ const parseSsn = (ssn: any): string => {
     return ssn;
 };
 
+const isGender = (gender: any): gender is Gender => {
+    return Object.values(Gender).includes(gender);
+};
+
+const parseGender = (gender: any): Gender => {
+    if (!gender || !isGender(gender)) {
+        throw new Error(`Incorrect or missing gender: ${gender}`);
+    }
+    return gender;
+};
+
 export const toNewPatient = (object: any): NewPatient => {
     return {
         name: parseString(object.name),
         dateOfBirth: parseDateOfBirth(object.dateOfBirth),
         ssn: parseSsn(object.ssn),
-        gender: parseString(object.gender),
+        gender: parseGender(object.gender),
         occupation: parseString(object.occupation)
     };
 };

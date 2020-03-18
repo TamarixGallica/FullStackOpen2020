@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Patient, NonSensitivePatient, NewPatient } from '../types';
 
-const patients: Array<Patient> = patientsData;
+const patients: Array<Patient> = patientsData as Array<Patient>;
 
 const nonSensitivePatients: Array<NonSensitivePatient> = patients.map((patient) => ({
     id: patient.id,
