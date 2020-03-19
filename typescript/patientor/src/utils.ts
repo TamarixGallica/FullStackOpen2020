@@ -5,7 +5,7 @@ const isValidString = (str: any): str is string => {
     return typeof str === 'string' || str instanceof String;
 };
 
-const parseString = (name: any): string => {
+export const parseString = (name: any): string => {
     if (!name || !isValidString(name)) {
         throw new Error(`Incorrect or missing name: ${name}`);
     }
@@ -54,6 +54,7 @@ export const toNewPatient = (object: any): NewPatient => {
         dateOfBirth: parseDateOfBirth(object.dateOfBirth),
         ssn: parseSsn(object.ssn),
         gender: parseGender(object.gender),
-        occupation: parseString(object.occupation)
+        occupation: parseString(object.occupation),
+        entries: []
     };
 };
