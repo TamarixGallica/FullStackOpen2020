@@ -7,6 +7,7 @@ import { Patient } from "../types";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails } from "../state";
 import SexSymbol from "./sexSymbol";
+import PatientEntry from "./patientEntry";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -28,7 +29,7 @@ const PatientListPage: React.FC = () => {
     if (patient && !patient.ssn) {
       fetchPatientDetails();
     }
-  }, [dispatch, patient]);
+  }, [dispatch, patient, id]);
 
   return (
     <div className="App">
@@ -38,8 +39,16 @@ const PatientListPage: React.FC = () => {
             <h3>{patient.name} <SexSymbol gender={patient.gender} /></h3>
             <p>
               ssn: {patient.ssn}<br/>
-              occupation: {patient.occupation}
+              occupation: {patient.occupation}<br/>
             </p>
+            <h4>entries</h4>
+            {
+              patient.entries
+              &&
+                patient.entries.map((entry, index) => (
+                  <PatientEntry entry={entry} key={index} />
+                ))
+            }
           </Container>
       }
     </div>
