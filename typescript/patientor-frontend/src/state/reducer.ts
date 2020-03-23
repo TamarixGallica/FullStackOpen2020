@@ -1,5 +1,5 @@
 import { State } from "./state";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 
 export type Action =
   | {
@@ -13,6 +13,10 @@ export type Action =
   | {
       type: "SET_PATIENT_DETAILS";
       payload: Patient;
+    }
+  | {
+      type: "SET_DIAGNOSES_LIST";
+      payload: Diagnosis[];
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -43,6 +47,15 @@ export const reducer = (state: State, action: Action): State => {
           ...state.patients,
           [action.payload.id]: action.payload
         }
+      };
+    case "SET_DIAGNOSES_LIST":
+      const result = new Map<string, Diagnosis>();
+      action.payload.forEach((diagnosis: Diagnosis) => {
+        result.set(diagnosis.code, diagnosis);
+      });
+      return {
+        ...state,
+        diagnoses: result
       };
     default:
       return state;

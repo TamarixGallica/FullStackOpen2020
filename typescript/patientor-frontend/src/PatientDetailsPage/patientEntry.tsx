@@ -1,5 +1,6 @@
 import React from "react";
 import { Entry } from "../types";
+import PatientDiagnosis from "./patientDiagnosis";
 
 type EntryProps = {
     entry: Entry;
@@ -20,7 +21,7 @@ const PatientEntry: React.FC<EntryProps> = ({ entry }: EntryProps) => {
                 && (
                     <ul>
                         {
-                            entry.diagnosisCodes.map((code, index) => <li key={index}>{code}</li>)
+                            entry.diagnosisCodes.map((code, index) => <PatientDiagnosis key={index} diagnosisCode={code} />)
                         }
                     </ul>
                 )
