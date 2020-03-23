@@ -1,10 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import patientsData from '../../data/patients';
-import { Patient, NonSensitivePatient, NewPatient } from '../types';
+import { Patient, NonSensitivePatient, NewPatient, Entry } from '../types';
 import { parseString } from '../utils';
 
 const patients: Array<Patient> = patientsData;
+const patientsMem = patients.slice(0);
 
 const nonSensitivePatients: Array<NonSensitivePatient> = patients.map((patient) => ({
     id: patient.id,
@@ -15,7 +16,7 @@ const nonSensitivePatients: Array<NonSensitivePatient> = patients.map((patient) 
 }));
 
 const getPatients = (): Array<Patient> => {
-  return patients;
+  return patientsMem;
 };
 
 const getNonSensitivePatients = (): Array<NonSensitivePatient> => {
@@ -39,13 +40,24 @@ const addPatient = (newPatient: NewPatient): Patient => {
         ...newPatient,
     };
     console.log('Added patient:');
-    console.log(addedPatient);
+    patientsMem.push(addedPatient);
+    console.dir(patientsMem);
+    // console.log(addedPatient);
   return addedPatient;
+};
+
+const addEntry = (patient: Patient, entry: Entry): Entry => {
+  console.log('Patient:');
+  console.dir(patient);
+  console.log('Returned entry:');
+  console.dir(entry);
+  return patients[0].entries[0];
 };
 
 export default {
   getPatients,
   getNonSensitivePatients,
   getPatient,
-  addPatient
+  addPatient,
+  addEntry
 };
