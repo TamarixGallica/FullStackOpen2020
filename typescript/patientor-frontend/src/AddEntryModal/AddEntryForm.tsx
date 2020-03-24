@@ -13,6 +13,15 @@ interface Props {
   onCancel: () => void;
 }
 
+const isValidDate = (date: string): boolean => {
+  const createdDate = new Date(date);
+  if (createdDate.toString() === "Invalid Date") {
+    return false;
+  }
+  const formattedDate = createdDate.toISOString().substring(0,10);
+  return date === formattedDate;
+};
+
 export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
 
   const [{ diagnoses },] = useStateValue();
@@ -33,6 +42,9 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
         const errors: { [field: string]: string } = {};
         if (!values.date) {
           errors.date = requiredError;
+        }
+        if (!isValidDate(values.date)) {
+          errors.date = "Date is not in format YYYY-MM-DD";
         }
         if (!values.description) {
           errors.description = requiredError;
