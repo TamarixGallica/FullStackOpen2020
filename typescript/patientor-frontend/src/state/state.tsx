@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { Patient, Diagnosis } from "../types";
+import { Patient, Diagnosis, Entry } from "../types";
 
 import { Action } from "./reducer";
 
@@ -31,6 +31,14 @@ export const addPatient = (patient: Patient): Action => {
   return {
     type: "ADD_PATIENT",
     payload: patient
+  };
+};
+
+export const addEntry = (patient: Patient, entry: Entry): Action => {
+  return {
+    type: "ADD_ENTRY",
+    entry: entry,
+    patient: patient
   };
 };
 
