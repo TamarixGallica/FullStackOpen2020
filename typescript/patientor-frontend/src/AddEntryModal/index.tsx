@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Modal, Segment, Dropdown, Container } from 'semantic-ui-react';
 import AddHealthCheckEntryForm, { HealthCheckEntryFormValues } from './AddHealthCheckEntryForm';
 import AddOccupationalHealthCareEntryForm, { OccupationalHealthCareEntryFormValues } from './AddOccupationalHealthCareEntryForm';
+import AddHospitalEntryForm, { HospitalEntryFormValues } from './AddHospitalEntryForm';
 
 export type EntryFormValues =
   | HealthCheckEntryFormValues
-  | OccupationalHealthCareEntryFormValues;
+  | OccupationalHealthCareEntryFormValues
+  | HospitalEntryFormValues;
 
 interface Props {
   modalOpen: boolean;
@@ -32,11 +34,11 @@ const formTypeOptions = [
     text: "Occupational healthcare",
     value: FormType.OccupationalHealthCare,
   },
-  // {
-  //   key: FormType.HospitalEntry,
-  //   text: "Hospital Entry",
-  //   value: FormType.HospitalEntry,
-  // }
+  {
+    key: FormType.HospitalEntry,
+    text: "Hospital Entry",
+    value: FormType.HospitalEntry,
+  }
 ];
 
 const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => {
@@ -80,6 +82,10 @@ const AddEntryModal = ({ modalOpen, onClose, onSubmit, error }: Props) => {
         {
           formType === FormType.OccupationalHealthCare
           && <AddOccupationalHealthCareEntryForm onSubmit={onSubmit} onCancel={onClose} />
+        }
+        {
+          formType === FormType.HospitalEntry
+          && <AddHospitalEntryForm onSubmit={onSubmit} onCancel={onClose} />
         }
       </Modal.Content>
     </Modal>
