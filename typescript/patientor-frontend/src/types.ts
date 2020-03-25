@@ -11,7 +11,7 @@ interface Discharge {
   criteria: string;
 }
 
-interface SickLeave {
+export interface SickLeave {
   startDate: string;
   endDate: string;
 }

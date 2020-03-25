@@ -8,8 +8,7 @@ import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetails, addEntry } from "../state";
 import SexSymbol from "./sexSymbol";
 import PatientEntry from "./patientEntry";
-import AddEntryModal from "../AddEntryModal";
-import { HealthCheckEntryFormValues } from "../AddEntryModal/AddEntryForm";
+import AddEntryModal, { EntryFormValues } from "../AddEntryModal";
 
 const PatientListPage: React.FC = () => {
   const [{ patients }, dispatch] = useStateValue();
@@ -27,7 +26,7 @@ const PatientListPage: React.FC = () => {
     setError(undefined);
   };
 
-  const submitNewEntry = async (values: HealthCheckEntryFormValues) => {
+  const submitNewEntry = async (values: EntryFormValues) => {
     try {
       const { data: newEntry } = await axios.post<HealthCheckEntry>(
         `${apiBaseUrl}/patients/${patient && patient.id}/entries`,

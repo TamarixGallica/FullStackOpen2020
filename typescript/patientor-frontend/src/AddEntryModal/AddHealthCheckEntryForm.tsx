@@ -5,6 +5,7 @@ import { Field, Formik, Form } from "formik";
 import { useStateValue } from "../state";
 import { TextField, NumberField, DiagnosisSelection } from "../AddPatientModal/FormField";
 import { HealthCheckEntry } from "../types";
+import { isValidDate } from "../utils";
 
 export type HealthCheckEntryFormValues = Omit<HealthCheckEntry, "id">;
 
@@ -13,16 +14,7 @@ interface Props {
   onCancel: () => void;
 }
 
-const isValidDate = (date: string): boolean => {
-  const createdDate = new Date(date);
-  if (createdDate.toString() === "Invalid Date") {
-    return false;
-  }
-  const formattedDate = createdDate.toISOString().substring(0,10);
-  return date === formattedDate;
-};
-
-export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
+export const AddHealthCheckEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
 
   const [{ diagnoses },] = useStateValue();
 
@@ -112,4 +104,4 @@ export const AddEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
   );
 };
 
-export default AddEntryForm;
+export default AddHealthCheckEntryForm;
