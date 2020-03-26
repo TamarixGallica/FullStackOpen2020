@@ -1,5 +1,8 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql, UserInputError } = require('apollo-server')
 const uuid = require('uuid/v1')
+const mongoose = require('mongoose')
+const Author = require('./models/Author')
+const Book = require('./models/Book')
 
 const authors = [
   {
@@ -88,14 +91,22 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
+    author: Author!
+    id: ID!
+    genres: [String!]!
+  }
+
+  type BookInput {
+    title: String!
+    published: Int!
     author: String!
     id: ID!
     genres: [String!]!
   }
 
   type Author {
-    name: String!
-    id: ID!
+    name: String
+    id: ID
     born: Int
     bookCount: Int
   }
@@ -103,7 +114,7 @@ const typeDefs = gql`
   type Query {
     bookCount: Int!
     authorCount: Int!
-    allBooks(author: String, genre: String): [Book!]!
+    allBooks(author: String, genre: String): [Book]
     allAuthors: [Author!]!
   }
 
@@ -127,7 +138,12 @@ const resolvers = {
     authorCount: () => authors.length,
     allBooks: (root, args) => {
       if (!args.author && !args.genre) {
-        return books
+        return books.map((book) => (
+          {
+            ...book,
+            author: authors.find((author) => author.name === book.author)
+          }
+        ))
       }
       let results = books
       if (args.author) {
@@ -141,16 +157,19 @@ const resolvers = {
     allAuthors: () => authors,
   },
   Mutation: {
-    addBook: (root, args) => {
-      const book = { ...args, id: uuid() }
-      if (!authors.some((author) => author.name === book.author)) {
-        const author = {
-          id: uuid(),
-          name: book.author,
-        }
-        authors.push(author)
+    addBook: async (root, args) => {
+      const book = new Book({ ...args })
+      const author = await Author.find({ name: args.author})
+      if (author.length === 0) {
+        const savedAuthor = new Author({
+          name: args.author
+        })
+        await savedAuthor.save();
+        book.author = savedAuthor
+      } else {
+        book.author = author[0]
       }
-      books.push(book)
+      await book.save()
       return book
     },
     editAuthor: (root, args) => {
@@ -176,6 +195,25 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 })
+
+mongoose.set('useFindAndModify', false)
+
+const MONGODB_URI = process.env.MONGODB_URI
+
+if (!MONGODB_URI) {
+  console.error('Required environment variable MONGODB_URI is not specified');
+  process.exit(1)
+}
+
+console.log('connecting to', MONGODB_URI)
+
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connection to MongoDB:', error.message)
+  })
 
 server.listen().then(({ url }) => {
   console.log(`Server ready at ${url}`)
