@@ -65,24 +65,38 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      const book = new Book({ ...args })
-      const author = await Author.find({ name: args.author})
-      if (author.length === 0) {
-        const savedAuthor = new Author({
-          name: args.author
-        })
-        await savedAuthor.save();
-        book.author = savedAuthor
-      } else {
-        book.author = author[0]
+      try {
+        const book = new Book({ ...args })
+        if (book.genres.length === 0) {
+          throw new Error('Each book must have at least one genre')
+        }
+        const author = await Author.find({ name: args.author })
+        if (author.length === 0) {
+          try {
+            const savedAuthor = new Author({
+              name: args.author
+            })
+            await savedAuthor.save();
+            book.author = savedAuthor
+          } catch (e) {
+            throw new Error(`Author's name '${args.author}' is too short, at least four characters are required`)
+          }
+        } else {
+          book.author = author[0]
+        }
+        await book.save()
+        return book
+      } catch (e) {
+        if (e.name === 'MongoError' && e.code === 11000) {
+          throw new UserInputError(`Book with title '${book.title}' already exists, titles must be unique`)
+        }
+        throw new UserInputError(e.message)
       }
-      await book.save()
-      return book
     },
     editAuthor: async (root, args) => {
       const author = (await Author.find({ name: args.name })).pop()
       if (!author) {
-        return null;
+        throw new UserInputError(`Author ${args.name} does not exist`)
       }
       author.born = args.setBornTo
       await author.save()
